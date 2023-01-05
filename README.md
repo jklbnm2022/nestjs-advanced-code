@@ -142,3 +142,11 @@ return {
 ```
 
 - 필요없는 데이터를 뺄 때 너무 sql 만 쓰려고 했던 건 아닌가 생각하게 되었다. 최적화 해야 할 때는 당연히 그렇게 해야겠지만, typeorm 에서 그렇게 데이터 솎아내는게 쉽지가 않았기 때문이다. 생산성 생각해서는 저렇게 처리하는 것도 고려는 해 볼만 할 듯.
+
+### 27. Redis
+
+- 언젠가 써봐야지 하던 걸 이 강의에서 쓰게 되었다. 좋다!
+- 강의와는 달리 @types/cache-manager 안해도 되는것처럼 [공식문서](https://docs.nestjs.com/techniques/caching#in-memory-cache)에 나와있다. 타입을 패키지 안에 넣어준 듯?
+  - cache-manager-redis-store 가 Node-redis 4버전을 지원하지 않는 문제가 있다고 한다. (nestjs [공식문서](https://docs.nestjs.com/techniques/caching#different-stores) 및 [github issue](https://github.com/dabroek/node-cache-manager-redis-store/issues/40) 참고)
+  - `npm i --save redis@3.1.2`로 우선 해당 이슈를 우회하도록 한다. [참고](https://www.npmjs.com/package/redis/v/3.1.2)
+  - `npm i --save cache-manager-redis-store` [참고](https://www.npmjs.com/package/cache-manager-redis-store)
