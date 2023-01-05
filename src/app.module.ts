@@ -8,6 +8,7 @@ import { ProductModule } from './product/product.module';
 import { OrderModule } from './order/order.module';
 import { LinkModule } from './link/link.module';
 import { SharedModule } from './shared/shared.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { SharedModule } from './shared/shared.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    EventEmitterModule.forRoot(),
     UserModule,
     AuthModule,
     ProductModule,

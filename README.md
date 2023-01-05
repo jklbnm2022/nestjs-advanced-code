@@ -148,8 +148,33 @@ return {
 - 언젠가 써봐야지 하던 걸 이 강의에서 쓰게 되었다. 좋다!
 - 강의와는 달리 @types/cache-manager 안해도 되는것처럼 [공식문서](https://docs.nestjs.com/techniques/caching#in-memory-cache)에 나와있다. 타입을 패키지 안에 넣어준 듯?
   - cache-manager-redis-store 가 Node-redis 4버전을 지원하지 않는 문제가 있다고 한다. (nestjs [공식문서](https://docs.nestjs.com/techniques/caching#different-stores) 및 [github issue](https://github.com/dabroek/node-cache-manager-redis-store/issues/40) 참고)
-  - `npm i --save redis@3.1.2`로 우선 해당 이슈를 우회하도록 한다. [참고](https://www.npmjs.com/package/redis/v/3.1.2)
   - `npm i --save cache-manager-redis-store` [참고](https://www.npmjs.com/package/cache-manager-redis-store)
+  - `npm i cache-manager@4.1.0` 5버전 올라가면서 문법 바뀌었다고 한다. [참고](https://velog.io/@chss3339/redis-%EC%97%90%EB%9F%AC-TypeError-store.get-is-not-a-function-NestJs-cache-manager). 4버전으로 바꿔주자...
+
+```javascript
+import { CacheModule, Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import * as rs from 'redis';
+
+@Module({
+  imports: [
+    JwtModule.register({
+      secret: 'bad_hard_coding_in_module.',
+      signOptions: { expiresIn: '1d' },
+    }),
+    CacheModule.register({
+      store: rs.redisStore,
+      host: 'localhost',
+      port: 6379,
+      legacyMode: true,
+    }),
+  ],
+  exports: [JwtModule, CacheModule],
+})
+export class SharedModule {}
+```
+
+- 에러가 나서 ioredis 도 써보고 redis 버전도 바꾸는 등 이것저것 하다가, cache-manager-redis-store 대신 redis 에서 redisStore 를 가져와 문제를 해결했다. 해결 된 걸까...?
 
 ### 28. Caching Products
 
@@ -177,3 +202,20 @@ return {
 ```
 
 - redis 를 사용해 cache 를 구성하는 두 가지 방법을 배울 수 있다.
+
+### 29. Event Emitters
+
+- cache 에 데이터를 넣으면, 해당 데이터 목록이 갱신될 때마다 cache 를 지워줘야 한다. 근데 그건 프로덕트 사이즈가 커질수록 어려워진다.
+  - 그래서 `event emitter` 를 쓰게 된다. [참고](https://docs.nestjs.com/techniques/events#events)
+  - `npm i --save @nestjs/event-emitter`
+- 캐싱을 지워줘야 할 때는 emit 으로 이벤트 발생만 알려주고, 처리는 listener 를 따로둬서 거기서 하게.
+  - 그리고 listener 도 서비스의 일종이기 때문에 provider 에 넣어야 작동한다. 안넣으면 오류는 안나는데 이벤트 받아서 동작하지를 않음.
+
+### 30. Searching Products
+
+- query 를 어떻게 처리할지 궁금했는데 잘되었다. 특히 단어의 경우 앞뒤로 %를 붙여야 해서 처리가 까다로웠기 때문이다.
+
+### 32. Paginating Products
+
+- 로직 정도만 알려준다. 나머지 영역은 typeorm 에서 알아서 해라 그건가.
+  - 예전에는 pagination function 을 만들어서 썼는데... typeorm pagination 관련 라이브러리 코드를 좀 봐야겠다.

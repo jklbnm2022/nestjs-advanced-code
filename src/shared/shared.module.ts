@@ -1,7 +1,6 @@
 import { CacheModule, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import type { ClientOpts } from 'redis';
-import * as redisStore from 'cache-manager-redis-store';
+import * as rs from 'redis';
 
 @Module({
   imports: [
@@ -9,10 +8,11 @@ import * as redisStore from 'cache-manager-redis-store';
       secret: 'bad_hard_coding_in_module.',
       signOptions: { expiresIn: '1d' },
     }),
-    CacheModule.register<ClientOpts>({
-      store: redisStore,
+    CacheModule.register({
+      store: rs.redisStore,
       host: 'localhost',
       port: 6379,
+      legacyMode: true,
     }),
   ],
   exports: [JwtModule, CacheModule],
