@@ -1,20 +1,30 @@
 import {
   Body,
+  CacheInterceptor,
+  CacheKey,
+  CacheTTL,
+  CACHE_MANAGER,
   Controller,
   Delete,
   Get,
+  Inject,
   Param,
   Post,
   Put,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { ProductCreateDto } from './dtos/product-create.dto';
 import { ProductService } from './product.service';
 
 @Controller()
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+  ) {}
 
   @Get(`products`)
   async all() {
@@ -47,5 +57,26 @@ export class ProductController {
   @Delete(`admin/products/:id`)
   async destroy(@Param('id') id: number) {
     return await this.productService.delete(id);
+  }
+
+  @CacheKey('products_frontend')
+  @CacheTTL(30 * 60)
+  @UseInterceptors(CacheInterceptor)
+  @Get(`ambassador/products/frontend`)
+  async frontend() {
+    return this.productService.find();
+  }
+
+  @Get(`ambassador/products/backend`)
+  async backend() {
+    let products = await this.cacheManager.get(`products_backend`);
+
+    if (!products) {
+      products = await this.productService.find({});
+
+      await this.cacheManager.set(`products_backend`, products, 1800);
+    }
+
+    return products;
   }
 }

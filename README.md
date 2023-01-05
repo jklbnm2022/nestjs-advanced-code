@@ -150,3 +150,30 @@ return {
   - cache-manager-redis-store 가 Node-redis 4버전을 지원하지 않는 문제가 있다고 한다. (nestjs [공식문서](https://docs.nestjs.com/techniques/caching#different-stores) 및 [github issue](https://github.com/dabroek/node-cache-manager-redis-store/issues/40) 참고)
   - `npm i --save redis@3.1.2`로 우선 해당 이슈를 우회하도록 한다. [참고](https://www.npmjs.com/package/redis/v/3.1.2)
   - `npm i --save cache-manager-redis-store` [참고](https://www.npmjs.com/package/cache-manager-redis-store)
+
+### 28. Caching Products
+
+```javascript
+  @CacheKey('products_frontend')
+  @CacheTTL(30 * 60)
+  @UseInterceptors(CacheInterceptor)
+  @Get(`ambassador/products/frontend`)
+  async frontend() {
+    return this.productService.find();
+  }
+
+  @Get(`ambassador/products/backend`)
+  async backend() {
+    let products = await this.cacheManager.get(`products_backend`);
+
+    if (!products) {
+      products = await this.productService.find({});
+
+      await this.cacheManager.set(`products_backend`, products, 1800);
+    }
+
+    return products;
+  }
+```
+
+- redis 를 사용해 cache 를 구성하는 두 가지 방법을 배울 수 있다.
