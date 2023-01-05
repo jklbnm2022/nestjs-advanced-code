@@ -219,3 +219,8 @@ export class SharedModule {}
 
 - 로직 정도만 알려준다. 나머지 영역은 typeorm 에서 알아서 해라 그건가.
   - 예전에는 pagination function 을 만들어서 썼는데... typeorm pagination 관련 라이브러리 코드를 좀 봐야겠다.
+
+### 34. Createing Links
+
+- fk 없이도 연결한 다른 테이블의 id를 이용할 수 있었다.
+  - 다만 이렇게 했을 때 user 가 원하는 것보다 더 많은 정보를 가지고 오는데, 이런 문제는 어떻게 해결할지 궁금하다.
