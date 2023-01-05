@@ -1,6 +1,6 @@
 # 소개
 
-- [React, NextJS and NestJS: A Rapid Guide - Advanced](https://www.udemy.com/course/react-nestjs-advanced/) 강의의 레포지토리입니다. 다만 강의 내용과 일치하지는 않을 수 있기에, 참고만 부탁드립니다.
+- [React, NextJS and NestJS: A Rapid Guide - Advanced](https://www.udemy.com/course/react-nestjs-advanced/) 강의의 레포지토리입니다. 다만 시간이 지남에 따라, 혹은 사용 라이브러리의 변화에 따라 강의 내 코드와 레포의 코드가 일치하지 않을 수 있습니다. 이 점유의하여 참고 부탁드립니다.
 - 해당 강의를 들은 이유는 한국어 강의 중에는 중급 과정의 NestJS 강의를 찾기 어려웠기 때문입니다. sse, socket, admin이 포함된 api 구성 방법 등을 한국어 강의를 통해 배우기 어렵다고 생각하던 중 해당 강의를 찾았습니다.
 - 해당 강의가 제가 원하는 부분을 얼마나 깊게 다루는지는 모르겠습니다. 우선 해당 강의를 바탕으로 프로젝트를 구성한 뒤 빈 부분은 구글링을 통해 완성시켜 보고자 합니다.
 
