@@ -1,6 +1,7 @@
 # 소개
 
-- [React, NextJS and NestJS: A Rapid Guide - Advanced](https://www.udemy.com/course/react-nestjs-advanced/) 강의의 레포지토리입니다. 다만 시간이 지남에 따라, 혹은 사용 라이브러리의 변화에 따라 강의 내 코드와 레포의 코드가 일치하지 않을 수 있습니다. 이 점유의하여 참고 부탁드립니다.
+- [React, NextJS and NestJS: A Rapid Guide - Advanced](https://www.udemy.com/course/react-nestjs-advanced/) 강의의 레포지토리입니다.
+- 다만 시간이 지남에 따라, 혹은 사용 라이브러리의 변화에 따라 강의 내 코드와 레포의 코드가 일치하지 않을 수 있습니다. 이 점 유의하여 참고 부탁드립니다.
 - 해당 강의를 들은 이유는 한국어 강의 중에는 중급 과정의 NestJS 강의를 찾기 어려웠기 때문입니다. sse, socket, admin이 포함된 api 구성 방법 등을 한국어 강의를 통해 배우기 어렵다고 생각하던 중 해당 강의를 찾았습니다.
 - 해당 강의가 제가 원하는 부분을 얼마나 깊게 다루는지는 모르겠습니다. 우선 해당 강의를 바탕으로 프로젝트를 구성한 뒤 빈 부분은 구글링을 통해 완성시켜 보고자 합니다.
 
@@ -40,30 +41,26 @@ services:
 ```
 
 - db 아래에 platform 을 추가했습니다. [참고](https://unluckyjung.github.io/develop-setting/2021/03/27/M1-Docker-Mysql-Error/)
-- mysql 버전을 5.7.22 에서 5.7.29 로 변경되었습니다. [참고](https://github.com/docker/for-mac/issues/6137)
+- mysql 버전을 5.7.22 에서 5.7.29 로 변경했습니다. [참고](https://github.com/docker/for-mac/issues/6137)
 
 ### 8. Register
 
 - [공식 문서](https://docs.nestjs.com/security/encryption-and-hashing)에는 bcrypt 사용이 기본으로 설정되어 있었다.
 - 강의에서는 bcrypt 대신 bcryptjs 를 사용해야 한다. 그렇지 않을 경우 문제가 발생했다.
 - ELF 문제
-  - node 버전 문제인 것 같지만 확실하지는 않다. ELF 문제가 메인에 뜬다.
+  - 추측: node 버전 문제인 것 같지만 확실하지는 않다. ELF 문제가 메인에 뜬다.
   - 원인: docker 를 통해 bcrypt 가 python 를 이용해서 그렇다고 한다. 순수 node 로는 처리가 안되는 코드가 있어서 그렇다고 한다.
   - 해결1: bcrypt 대신 bcryptjs 를 사용한다. 대신 보안문제는 감수해야 한다.
     - 사용하지 않음. 1) 더 좋은 라이브러리를 놔두고 구식을 쓰는게 해결책이 될 수는 없고. ( [같은 문제의식](https://velog.io/@devookim/docker%EC%97%90%EC%84%9C-bcrypt-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0) ) 2) 라이브러리 중 순수 js 만 쓰지 않는 라이브러리(sharp) 같은 건 쓸 수 없다는 소리이기 때문.
   - 해결2: 필요한 의존성 직접 설치
     - 아래 '해결책'에서 더 자세히 설명.
-  - Dockerfile 및 yaml 파일 수정 후, `docker-compose up --build` 를 통해 image 를 새로 빌드 - 실행 하였다.
-    - 관련 [문서](https://velog.io/@langssi/Dockerfile-docker-compose.yml-%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8-%ED%9B%84-%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-%EC%9E%AC%EC%8B%9C%EC%9E%91)
+  - Dockerfile 및 yaml 파일 수정 후, `docker-compose up --build` 를 통해 image 를 새로 빌드 - 실행 하였다. 관련 [문서](https://velog.io/@langssi/Dockerfile-docker-compose.yml-%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8-%ED%9B%84-%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-%EC%9E%AC%EC%8B%9C%EC%9E%91) 참고
 - Exec format error
-  - 원인: yaml 에 있는 volumns 가 문제가 되었다. volumns 가 app 전체를 땡겨오다 보니 local의 `node_modules` 까지 이용 해 버리는 문제였다. python 도 그렇고 c++ 도 그렇고 맥이냐 리눅스냐에 따라 설치되는 게 다른데, OS 다른데 node_modules 를 같은걸 쓰려다 보니 에러가 나는 것 같았다.
+  - 원인: yaml 에 있는 volumns 가 문제가 되었다. volumns 가 app 전체를 땡겨오다 보니 local의 `node_modules` 까지 이용 해 버리는 문제였다.
+    - python 도 그렇고 c++ 도 그렇고 맥이냐 리눅스냐에 따라 설치되는 게 다른데, OS 다른데 node_modules 를 같은걸 쓰려다 보니 에러가 나는 것 같았다.
   - 해결1: volumns 를 쓰지 않는다.
-    - 사용하지 않음. 1) 물론 node_modules 를 땡겨오지 않는 건 좋지만, 동시에 'src' 내 파일들도 안땡겨오기 때문에 코드 수정이 즉각적으로 반영되지 않을 것이라는 고민. 2) volumns 도 세밀하게 쓰는 방법이 있읉텐데 이렇게 안되니 안쓴다는 건 납득하기 어려웠음. 차라리 volumns 부분을 공부하는 게 낫다고 판단.
-  - 해결2: 검색 중 아래 해결책을 찾음.
-- 해결책
-  - 어떤 답변에서는 bcrypt 대신 bcryptjs 를 쓰라는... 뭐랄까 그렇게 하면 되기는 하지만 정답은 아닌 답변이 있었다.
-  - 그래서 구글링 더 하다가 [해결책](https://www.richardkotze.com/top-tips/install-bcrypt-docker-image-exclude-host-node-modules)을 발견했다.
-- 해결책
+    - 사용하지 않음. 1) 물론 node_modules 를 땡겨오지 않는 건 좋지만, 동시에 'src' 내 파일들도 안땡겨오기 때문에 코드 수정이 즉각적으로 반영되지 않을 것이라는 고민. 2) volumes 도 세밀하게 쓰는 방법이 있읉텐데 이렇게 안되니 안쓴다는 건 납득하기 어려웠음. 차라리 volumes 부분을 공부하는 게 낫다고 판단.
+- 해결책 - [참고](https://www.richardkotze.com/top-tips/install-bcrypt-docker-image-exclude-host-node-modules)
   - ELF: 이미지 생성 시 python3 를 설치하도록 했다.
   - Exec: anonymous volume 처리를 해줬다.
 - 추가
@@ -103,15 +100,16 @@ services:
 orders: Order[];
 ```
 
-`createForeginKeyConstraints` 를 `false` 로 주는 것이 핵심이다.
-(양쪽에 해당 옵션을 넣어준다.)
-(joinColumn 은 nestjs 에만 영향을 미치나보다(?) 넣어줘도 db 에는 반영되지 않는 것 같다.)
+- `createForeginKeyConstraints` 를 `false` 로 주는 것이 핵심이다.
+
+  - 양쪽에 해당 옵션을 넣어준다.
+  - joinColumn 은 nestjs 에만 영향을 미치나보다(?) 넣어줘도 db 에는 반영되지 않는 것 같다.
 
 - fk 를 db가 아닌 코드레벨 단위에서 관리하게 되어 유연함을 확보할 수 있다. (는 이야기가 장점으로 소개되고는 한다.)
 
 ### 21. Shared Module
 
-- 처음 NestJS 를 쓸 때 가장 애먹었던 부분... 이제는 익숙하다.
+- 처음 NestJS 를 쓸 때 가장 애먹었던 부분. 이제는 익숙하다.
 - 모듈을 공유하는 방법을 알려준다.
   - 예시로 드는게 JwtModule 인데, 이걸 Auth 로 땡기는 게 아니라 Shared 라는 Module 을 만들고, 거기에 JwtModule 을 넣는 식이다... 이러면 나중에 사이즈 커질수록 Shared 에 다른 게 붙을텐데 이렇게 하는게 맞는 건가...? 프로그램만 효율적으로 돌아간다면야 괜찮겠지만. 에러가 났을 때 어디서 문제가 생긴건지 확인하기 어려울 수 있어서 이렇게 하는 게 맞는건지 고민이 된다.
 
@@ -214,6 +212,7 @@ export class SharedModule {}
 ### 30. Searching Products
 
 - query 를 어떻게 처리할지 궁금했는데 잘되었다. 특히 단어의 경우 앞뒤로 %를 붙여야 해서 처리가 까다로웠기 때문이다.
+  - typeorm 과 연동 안해서 아쉬움.
 
 ### 32. Paginating Products
 
