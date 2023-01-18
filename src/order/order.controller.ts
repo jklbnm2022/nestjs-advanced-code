@@ -14,8 +14,6 @@ import { LinkService } from 'src/link/link.service';
 import { Product } from 'src/product/product.entity';
 import { ProductService } from 'src/product/product.service';
 import { CreateOrderDto } from './dtos/create-order.dto';
-import { OrderItem } from './entites/order-item.entity';
-import { Order } from './entites/order.entity';
 import { OrderItemService } from './order-item.service';
 import { OrderService } from './order.service';
 
@@ -51,8 +49,6 @@ export class OrderController {
       },
     });
 
-    console.log({ link });
-
     if (!link) {
       throw new BadRequestException(`Invalid link.`);
     }
@@ -69,17 +65,6 @@ export class OrderController {
       zip: body.zip,
       code: body.code,
     };
-
-    // o.user_id = link.user.id;
-    // o.ambassador_email = link.user.email;
-    // o.first_name = body.first_name;
-    // o.last_name = body.last_name;
-    // o.email = body.email;
-    // o.address = body.address;
-    // o.country = body.country;
-    // o.city = body.city;
-    // o.zip = body.zip;
-    // o.code = body.code;
 
     const order = await this.orderSerivce.save(o);
     const AMBASSADOR_REVENUE_RATE = 0.1;
