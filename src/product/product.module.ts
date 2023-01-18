@@ -10,5 +10,6 @@ import { ProductService } from './product.service';
   imports: [SharedModule, TypeOrmModule.forFeature([Product])],
   controllers: [ProductController],
   providers: [ProductService, ProductListener],
+  exports: [ProductService],
 })
 export class ProductModule {}

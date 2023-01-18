@@ -233,3 +233,22 @@ export class SharedModule {}
 ---
 
 ## 섹션 4. Nest Checkout
+
+### 38. checkout endpoint
+
+- GET /api/checkout/links/{code}
+- POST /api/checkout/orders
+- POST /api/checkout/orders/confirm
+
+### 39. Getting Link Data
+
+- 기존 작업의 반복. password 같은 정보가 반환되지 않도록 `@UseInterceptors(ClassSerializerInterceptor)` 를 데코레이터로 씌워준다.
+  - 인터셉터가 relation 된 데이터까지 검사해서 제외할 수 있을지 궁금했는데 확인할 수 있었다.
+  - 데이터가 리턴 될 때 검사하기 때문에, 리턴되기 전에는 password 와 같은 민감정보도 활용할 수 있다.
+
+### 40. Creating orders
+
+- 오래된 강의라는 걸 느낄 수 있는 파트
+  - Order 데이터를 만들 때 new Order 를 생성하고 거기에 하나씩 데이터를 주입한다. 근데 Order 에는 데이터만 있는게 아니라 메소드가 같이 있어서, save 를 하면 에러가 난다. 이게 Typeorm 0.3 이전에는 되었다는 건가 그런 생각이 들었다.
+
+### 41. Transaction
