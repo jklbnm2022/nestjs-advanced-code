@@ -223,3 +223,13 @@ export class SharedModule {}
 
 - fk 없이도 연결한 다른 테이블의 id를 이용할 수 있었다.
   - 다만 이렇게 했을 때 user 가 원하는 것보다 더 많은 정보를 가지고 오는데, 이런 문제는 어떻게 해결할지 궁금하다.
+
+### 36 - 37. redis 고급기능 이용
+
+- nestjs 의 미지원 문제가 있었음.
+  - cache manager, redis version, type/redis type 등등 꼬인게 많은데 해결하지 못했음.
+- 자체적으로 해결하기 어려워 우선 건너뛰고 강의를 다 들은 뒤 해결하기로 결정.
+
+---
+
+## 섹션 4. Nest Checkout
