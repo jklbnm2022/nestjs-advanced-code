@@ -13,7 +13,10 @@ import { Link } from 'src/link/link.entity';
 import { LinkService } from 'src/link/link.service';
 import { Product } from 'src/product/product.entity';
 import { ProductService } from 'src/product/product.service';
+import { DataSource } from 'typeorm';
 import { CreateOrderDto } from './dtos/create-order.dto';
+import { OrderItem } from './entites/order-item.entity';
+import { Order } from './entites/order.entity';
 import { OrderItemService } from './order-item.service';
 import { OrderService } from './order.service';
 
@@ -25,6 +28,7 @@ export class OrderController {
     private readonly orderSerivce: OrderService,
     private readonly linkService: LinkService,
     private readonly productService: ProductService,
+    private dataSource: DataSource,
   ) {}
 
   @UseGuards(AuthGuard)
@@ -40,7 +44,11 @@ export class OrderController {
 
   @Post(`checkout/orders`)
   async create(@Body() body: CreateOrderDto) {
-    const link: Link = await this.linkService.findOne({
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    const link: Link = await queryRunner.manager.getRepository(Link).findOne({
       where: {
         code: body.code,
       },
@@ -66,30 +74,43 @@ export class OrderController {
       code: body.code,
     };
 
-    const order = await this.orderSerivce.save(o);
-    const AMBASSADOR_REVENUE_RATE = 0.1;
+    try {
+      const order: Order = await queryRunner.manager
+        .getRepository(Order)
+        .save(o);
+      const AMBASSADOR_REVENUE_RATE = 0.1;
 
-    for (let p of body.products) {
-      const product: Product = await this.productService.findOne({
-        where: {
-          id: p.product_id,
-        },
-      });
+      // throw new Error();
 
-      const orderItem = {
-        order: order,
-        product_title: product.title,
-        price: product.price,
-        quantity: p.quantity,
-        ambassador_revenue:
-          AMBASSADOR_REVENUE_RATE * product.price * p.quantity,
-        admin_revenue:
-          (1 - AMBASSADOR_REVENUE_RATE) * product.price * p.quantity,
-      };
+      for (let p of body.products) {
+        const product: Product = await queryRunner.manager.findOne(Product, {
+          where: {
+            id: p.product_id,
+          },
+        });
 
-      await this.orderItemService.save(orderItem);
+        const orderItem = {
+          order: order,
+          product_title: product.title,
+          price: product.price,
+          quantity: p.quantity,
+          ambassador_revenue:
+            AMBASSADOR_REVENUE_RATE * product.price * p.quantity,
+          admin_revenue:
+            (1 - AMBASSADOR_REVENUE_RATE) * product.price * p.quantity,
+        };
+
+        await queryRunner.manager.getRepository(OrderItem).save(orderItem);
+      }
+
+      await queryRunner.commitTransaction();
+
+      return order;
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
     }
-
-    return order;
   }
 }
