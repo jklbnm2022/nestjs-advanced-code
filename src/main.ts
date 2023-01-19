@@ -22,7 +22,7 @@ async function bootstrap() {
       'http://localhost:5000',
     ],
   });
-  const port = configService.get('PORT');
+  const port = configService.get('server.port');
 
   await app.listen(port);
 }
