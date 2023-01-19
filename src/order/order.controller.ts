@@ -74,8 +74,6 @@ export class OrderController {
         .save(o);
       const AMBASSADOR_REVENUE_RATE = 0.1;
 
-      // throw new Error();
-
       for (let p of body.products) {
         const product: Product = await queryRunner.manager.findOne(Product, {
           where: {
