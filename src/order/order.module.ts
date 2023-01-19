@@ -10,12 +10,7 @@ import { LinkModule } from 'src/link/link.module';
 import { ProductModule } from 'src/product/product.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Order, OrderItem]),
-    SharedModule,
-    LinkModule,
-    ProductModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Order, OrderItem]), SharedModule],
   providers: [OrderService, OrderItemService],
   controllers: [OrderController],
 })

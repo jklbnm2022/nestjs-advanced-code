@@ -10,24 +10,18 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Link } from 'src/link/link.entity';
-import { LinkService } from 'src/link/link.service';
 import { Product } from 'src/product/product.entity';
-import { ProductService } from 'src/product/product.service';
 import { DataSource } from 'typeorm';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { OrderItem } from './entites/order-item.entity';
 import { Order } from './entites/order.entity';
-import { OrderItemService } from './order-item.service';
 import { OrderService } from './order.service';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller()
 export class OrderController {
   constructor(
-    private readonly orderItemService: OrderItemService,
     private readonly orderSerivce: OrderService,
-    private readonly linkService: LinkService,
-    private readonly productService: ProductService,
     private dataSource: DataSource,
   ) {}
 
@@ -107,8 +101,8 @@ export class OrderController {
 
       return order;
     } catch (err) {
-      console.log(err);
       await queryRunner.rollbackTransaction();
+      throw new BadRequestException();
     } finally {
       await queryRunner.release();
     }
