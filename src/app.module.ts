@@ -30,7 +30,17 @@ import configOption from './config/config.options';
             'database.autoLoadEntities',
           ),
           synchronize: configService.get<boolean>('database.synchronize'),
-          logging: configService.get('database.logging'),
+          logging: [
+            configService.get<
+              | 'query'
+              | 'schema'
+              | 'error'
+              | 'warn'
+              | 'info'
+              | 'log'
+              | 'migration'
+            >('database.logging'),
+          ],
           charset: configService.get('database.charset'),
         };
       },
