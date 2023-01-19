@@ -2,9 +2,12 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+
   app.setGlobalPrefix(`api`);
   app.useGlobalPipes(
     new ValidationPipe({
@@ -19,6 +22,8 @@ async function bootstrap() {
       'http://localhost:5000',
     ],
   });
-  await app.listen(3000);
+  const port = configService.get('PORT');
+
+  await app.listen(port);
 }
 bootstrap();
