@@ -10,6 +10,6 @@ export default registerAs('database', () => ({
   autoLoadEntities: process.env.DB_AUTOLOADENTITIES === 'true',
   synchronize: process.env.DB_SYNCHRONIZE === 'true',
   keepConnectionAlive: process.env.DB_KEEP_CONNECTION_ALIVE === 'true',
-  logging: process.env.DB_LOGGING === 'true' ? true : process.env.DB_LOGGING,
+  logging: process.env.DB_LOGGING ?? 'log',
   charset: process.env.DB_CHARSET ?? 'utf8mb4_general_ci',
 }));
