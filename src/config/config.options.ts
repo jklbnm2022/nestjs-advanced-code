@@ -2,6 +2,7 @@ import * as Joi from 'joi';
 import serverConfig from './server.config';
 import databaseConfig from './database.config';
 import databaseValidationSchema from './validation/database.validation';
+import getEnvFilePath from 'src/common/getEnvFilePath';
 
 const configOption = {
   validationSchema: Joi.object({
@@ -15,12 +16,7 @@ const configOption = {
     allowUnknown: true,
     abortEarly: true,
   },
-  envFilePath: [
-    '.env.development.local',
-    '.env.development',
-    '.env.production',
-    '.env',
-  ],
+  envFilePath: getEnvFilePath(process.env.NODE_ENV),
   isGlobal: true,
   load: [serverConfig, databaseConfig],
 };
