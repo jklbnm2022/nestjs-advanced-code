@@ -261,6 +261,12 @@ export class SharedModule {}
   - 멍청한 건 나였구연... getRepository 를 쓰면 중간에 에러가 났을 때 롤백을 해준다. 나는 id 가 자꾸 늘어나니까 데이터가 들어갔다고 생각했는데 막상 DB도 까고 멍개님 조언대로 log 도 찍어보니 이런 것을 확인할 수 있었다. 너무 민망하다... 제로초와 멍개는 신이야! (나는 어...음...)
     - 멍개님과 나눈 [이야기](https://blog.naver.com/pjt3591oo/222927333364) (댓글 확인)
 
+#### transaction 공통 코드를 intercepter 로 분리하기
+
+- 참고 글 : [링크](https://hou27.tistory.com/entry/NestJS-Transaction-Interceptor-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0)
+  - 안 보일때는 엄청 안보이다가 문제를 해결하고 나니 보이기 시작하는 글.
+  - 문제의식에 꽤나 동의해서 구현 해 볼 예정.
+
 ### 42. Stripe (추후 다룸)
 
 - stripe 연동 부분을 다룬다. 지금 필요한 급한 부분은 아니니 건너뛴다. (어차피 연결할 때마다 해당 PG의 도큐먼트를 봐야 한다.)
@@ -272,6 +278,7 @@ export class SharedModule {}
 - 강의 내용이 부족해서 제로초 강의와 공식문서를 참고했다.
   - 제로초 강의의 경우에도 env 로 설정하는 정도만 하고 넘어가서 공식문서 + 검색을 통해 작동하는 configure (joi 적용) 을 완성했다.
   - configure 같은 경우 한 번 잘 다져놓으면 오래도록 쓸 수 있으니, 배울 때 조금 빡빡하게 배워두는 게 좋을 듯 하다.
+- cross-env 설정을 적용. docker 통해 작동 확인.
 
 #### 번외 - joi
 
